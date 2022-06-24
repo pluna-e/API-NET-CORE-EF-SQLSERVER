@@ -23,13 +23,26 @@ namespace API_Disney.Controllers
 
         // GET: api/Generos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Genero>>> GetGeneros()
+        //public async Task<ActionResult<IEnumerable<Genero>>> GetGeneros()
+        //{
+        //  if (_context.Generos == null)
+        //  {
+        //      return NotFound();
+        //  }
+        //    return await _context.Generos.ToListAsync();
+        //}
+        public IQueryable GetGeneros()
         {
-          if (_context.Generos == null)
-          {
-              return NotFound();
-          }
-            return await _context.Generos.ToListAsync();
+            var response = from pel in _context.Peliculas
+                           join gen in _context.Generos
+                           on pel.GeneroId equals gen.GeneroId
+                           select new
+                           {
+                               Nombre = gen.Nombre,
+                               Imagen = gen.Imagen,
+                               Pelicula = pel.Titulo
+                           };
+            return response.AsQueryable();
         }
 
         // GET: api/Generos/5

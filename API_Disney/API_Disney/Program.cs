@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 
 //busca la connectionString de el appsetting.json
-var connectionString = builder.Configuration.GetConnectionString("DisneyApiDb");
+var connectionString = builder.Configuration.GetConnectionString("MyDisneyDb");
 builder.Services.AddDbContext<DisneyDbContext>(opt => opt.UseSqlServer(connectionString));
 
 var app = builder.Build();

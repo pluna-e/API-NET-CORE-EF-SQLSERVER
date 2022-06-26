@@ -10,7 +10,7 @@ using API_Disney.Models;
 
 namespace API_Disney.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/characters")]
     [ApiController]
     public class PersonajesController : ControllerBase
     {
@@ -23,31 +23,46 @@ namespace API_Disney.Controllers
 
         // GET: api/Personajes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Personaje>>> GetPersonajes()
+        public IQueryable GetPersonajes()
         {
-          if (_context.Personajes == null)
-          {
-              return NotFound();
-          }
-            return await _context.Personajes.ToListAsync();
+          //if (_context.Personajes == null)
+          //{
+          //    return NotFound();
+          //}
+
+            IQueryable result = from per in _context.Personajes
+                         select new
+                         {
+                            Imagen = per.Imagen,
+                            Nombre = per.Nombre
+                         }; 
+            return result.AsQueryable();
         }
 
         // GET: api/Personajes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Personaje>> GetPersonaje(int id)
+        public IQueryable GetPersonaje(int id)
         {
-          if (_context.Personajes == null)
-          {
-              return NotFound();
-          }
-            var personaje = await _context.Personajes.FindAsync(id);
+          //if (_context.Personajes == null)
+          //{
+          //    return NotFound();
+          //}
+          //  var personaje = await _context.Personajes.FindAsync(id);
 
-            if (personaje == null)
-            {
-                return NotFound();
-            }
+          //  if (personaje == null)
+          //  {
+          //      return NotFound();
+          //  }
+          
+            IQueryable result = from per in _context.Personajes
+                                where per.PersonajeId == id
+                                select new
+                                {
+                                    Imagen = per.Imagen,
+                                    Nombre = per.Nombre
+                                };
 
-            return personaje;
+            return result.AsQueryable();
         }
 
         // PUT: api/Personajes/5

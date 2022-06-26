@@ -47,20 +47,21 @@ namespace API_Disney.Controllers
 
         // GET: api/Generos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Genero>> GetGenero(int id)
+        public IQueryable GetGenero(int id)
         {
-          if (_context.Generos == null)
-          {
-              return NotFound();
-          }
-            var genero = await _context.Generos.FindAsync(id);
+            var genero =  _context.Generos.Find(id);
 
-            if (genero == null)
-            {
-                return NotFound();
-            }
-
-            return genero;
+           
+            var response = from pel in _context.Peliculas
+                           join gen in _context.Generos
+                           on pel.GeneroId equals id
+                           select new
+                           {
+                               Nombre = genero.Nombre,
+                               Imagen = genero.Imagen,
+                               Pelicula = pel.Titulo
+                           };
+            return response.AsQueryable();
         }
 
         // PUT: api/Generos/5

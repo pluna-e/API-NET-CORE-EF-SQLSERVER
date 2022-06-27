@@ -21,20 +21,82 @@ namespace API_Disney.Controllers
             _context = context;
         }
 
-        // GET: api/Personajes
+        //GET: /characters
         [HttpGet]
-        public IQueryable GetPersonajes()
+        public IQueryable GetPersonajes(string? name,int? age,int? idPeli)
         {
-            IQueryable result = from per in _context.Personajes
-                         select new
-                         {
-                            Imagen = per.Imagen,
-                            Nombre = per.Nombre
-                         }; 
-            return result.AsQueryable();
+            IQueryable resultado;
+
+            // /characters?name = nombre
+            IQueryable filtrarNombre(string? nombre)
+            {
+                resultado = from per in _context.Personajes
+                            where per.Nombre == nombre
+                            select new
+                            {
+                                Imagen = per.Imagen,
+                                Nombre = per.Nombre
+                            };
+                return resultado.AsQueryable();
+            }
+
+            // /characters?age = edad
+            IQueryable filtrarEdad(int? edad)
+            {
+                resultado = from per in _context.Personajes
+                            where per.Edad == edad
+                            select new
+                            {
+                                Imagen = per.Imagen,
+                                Nombre = per.Nombre
+                            };
+                return resultado.AsQueryable();
+            }
+
+            // /characters?movies = idMovie
+            IQueryable filtrarPeliculas(int? idPelicula)
+            {
+                resultado = from pel in _context.Peliculas
+                            where pel.PeliculaId == idPelicula
+                            select new
+                            {
+                                Imagen = pel.Personajes.Select(p=>p.Imagen),
+                                Nombre = pel.Personajes.Select(p=>p.Nombre)
+                            };
+                return resultado.AsQueryable();
+            }
+            IQueryable mostrarTodos()
+            {
+                resultado = from per in _context.Personajes
+                            select new
+                            {
+                                Imagen = per.Imagen,
+                                Nombre = per.Nombre
+                            };
+                return resultado.AsQueryable();
+            }
+
+            if(name != null){ return filtrarNombre(name);}
+            if(age != null){ return filtrarEdad(age);}
+            if(idPeli != null) { return filtrarPeliculas(idPeli);}
+
+            return mostrarTodos();
+            //var url = HttpContext.Request.Query["name"];
+
+            //if (url.Count > 0)
+            //{
+            //    resultado = from per in _context.Personajes
+            //                where per.Nombre == url[0].ToString()
+            //                select new
+            //                {
+            //                    Imagen = per.Imagen,
+            //                    Nombre = per.Nombre
+            //                };
+            //    return resultado;
+            //}
         }
 
-        // GET: api/Personajes/5
+        //DETALLE PERSONAJE
         [HttpGet("detalles/{id}")]
         public IQueryable DetallePersonaje(int id)
         {
@@ -51,8 +113,6 @@ namespace API_Disney.Controllers
                                 };
             return result.AsQueryable();
         }
-
-       
 
         // PUT: api/Personajes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

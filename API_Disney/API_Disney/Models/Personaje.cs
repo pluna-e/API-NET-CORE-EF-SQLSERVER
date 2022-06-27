@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace API_Disney.Models
 {
@@ -14,8 +15,12 @@ namespace API_Disney.Models
 
         [Required]//un atributo Required si al momento de querer guardar la entidad se encuentra en null lanzará la siguiente Exception ->  System.Data.Entity.Validation.DbEntityValidationException 
         public byte[] Imagen { get; set; }
+
         [Required]
+        [FromQuery(Name ="name")]
         public string Nombre { get; set; }
+
+        [FromQuery(Name = "age")]
         public int Edad { get; set; }
         public double Peso { get; set; }
         public string Historia { get; set; }

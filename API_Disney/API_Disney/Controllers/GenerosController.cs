@@ -23,14 +23,6 @@ namespace API_Disney.Controllers
 
         // GET: api/Generos
         [HttpGet]
-        //public async Task<ActionResult<IEnumerable<Genero>>> GetGeneros()
-        //{
-        //  if (_context.Generos == null)
-        //  {
-        //      return NotFound();
-        //  }
-        //    return await _context.Generos.ToListAsync();
-        //}
         public IQueryable GetGeneros()
         {
             var response = from pel in _context.Peliculas

@@ -10,7 +10,7 @@ using API_Disney.Models;
 
 namespace API_Disney.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/movies")]
     [ApiController]
     public class PeliculasController : ControllerBase
     {
@@ -21,33 +21,36 @@ namespace API_Disney.Controllers
             _context = context;
         }
 
-        // GET: api/Peliculas
+        // Listado de peliculas deberá mostrar solamente los campos imagen, título y fecha de creación.
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pelicula>>> GetPeliculas()
+        public IQueryable GetPeliculas()
         {
-          if (_context.Peliculas == null)
-          {
-              return NotFound();
-          }
-            return await _context.Peliculas.ToListAsync();
+            IQueryable respuesta = from pel in _context.Peliculas
+                            select new
+                            {
+                                Imagen = pel.Imagen,
+                                Titulo = pel.Titulo,
+                                Fechadecreación = pel.FechaCreacion
+                            };
+            return respuesta.AsQueryable();
         }
 
         // GET: api/Peliculas/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Pelicula>> GetPelicula(int id)
+        [HttpGet("/detalle/{id}")]
+        public IQueryable GetPelicula(int id)
         {
-          if (_context.Peliculas == null)
-          {
-              return NotFound();
-          }
-            var pelicula = await _context.Peliculas.FindAsync(id);
-
-            if (pelicula == null)
-            {
-                return NotFound();
-            }
-
-            return pelicula;
+            IQueryable respuesta = from pel in _context.Peliculas
+                                   where pel.PeliculaId == id
+                                   select new
+                                   {
+                                       Titulo = pel.Titulo,
+                                       Imagen = pel.Imagen,
+                                       FecCreaccion = pel.FechaCreacion,
+                                       Generos = pel.Genero.Nombre,
+                                       Calificación = pel.Calificacion,
+                                       Personajes = pel.Personajes.Select(personaje => personaje.Nombre)
+                                   };
+            return respuesta.AsQueryable();
         }
 
         // PUT: api/Peliculas/5

@@ -25,11 +25,6 @@ namespace API_Disney.Controllers
         [HttpGet]
         public IQueryable GetPersonajes()
         {
-          //if (_context.Personajes == null)
-          //{
-          //    return NotFound();
-          //}
-
             IQueryable result = from per in _context.Personajes
                          select new
                          {
@@ -40,30 +35,24 @@ namespace API_Disney.Controllers
         }
 
         // GET: api/Personajes/5
-        [HttpGet("{id}")]
-        public IQueryable GetPersonaje(int id)
+        [HttpGet("detalles/{id}")]
+        public IQueryable DetallePersonaje(int id)
         {
-          //if (_context.Personajes == null)
-          //{
-          //    return NotFound();
-          //}
-          //  var personaje = await _context.Personajes.FindAsync(id);
-
-          //  if (personaje == null)
-          //  {
-          //      return NotFound();
-          //  }
-          
             IQueryable result = from per in _context.Personajes
                                 where per.PersonajeId == id
                                 select new
                                 {
+                                    Nombre = per.Nombre,
+                                    Edad = per.Edad,
+                                    Peso = per.Peso,
+                                    Historia = per.Historia,
                                     Imagen = per.Imagen,
-                                    Nombre = per.Nombre
+                                    Peliculas = per.Peliculas.Select(p=>p.Titulo)
                                 };
-
             return result.AsQueryable();
         }
+
+       
 
         // PUT: api/Personajes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

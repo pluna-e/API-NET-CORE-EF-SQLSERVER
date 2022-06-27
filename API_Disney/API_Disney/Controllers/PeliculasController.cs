@@ -23,16 +23,81 @@ namespace API_Disney.Controllers
 
         // Listado de peliculas deberá mostrar solamente los campos imagen, título y fecha de creación.
         [HttpGet]
-        public IQueryable GetPeliculas()
+        public IQueryable GetPeliculas(string? name,int? genre,string? order)
         {
-            IQueryable respuesta = from pel in _context.Peliculas
+            IQueryable respuesta;
+            // / movies ? name = nombre
+            // / movies ? genre = idGenero
+            // / movies ? order = ASC | DESC
+            IQueryable filtroTitulo(string? nombre)
+            {
+                respuesta = from pel in _context.Peliculas
+                            where pel.Titulo == nombre
                             select new
                             {
                                 Imagen = pel.Imagen,
                                 Titulo = pel.Titulo,
                                 Fechadecreación = pel.FechaCreacion
                             };
-            return respuesta.AsQueryable();
+                return respuesta.AsQueryable();
+            }
+            IQueryable filtroGenero(int? genero)
+            {
+                respuesta = from pel in _context.Peliculas
+                            where pel.GeneroId == genero
+                            select new
+                            {
+                                Imagen = pel.Imagen,
+                                Titulo = pel.Titulo,
+                                Fechadecreación = pel.FechaCreacion
+                            };
+                return respuesta.AsQueryable();
+            }
+            IQueryable ordenar(string? ordenTipo)
+            {
+                if (ordenTipo.Equals("ASC"))
+                {
+                    respuesta = from pel in _context.Peliculas
+                                orderby pel.FechaCreacion ascending
+                                select new
+                                {
+                                    Imagen = pel.Imagen,
+                                    Titulo = pel.Titulo,
+                                    Fechadecreación = pel.FechaCreacion
+                                };
+                }
+                else
+                {
+                    respuesta = from pel in _context.Peliculas
+                                orderby pel.FechaCreacion descending
+                                select new
+                                {
+                                    Imagen = pel.Imagen,
+                                    Titulo = pel.Titulo,
+                                    Fechadecreación = pel.FechaCreacion
+                                };
+                }
+                 return respuesta.AsQueryable();
+            }
+
+            IQueryable mostrarTodas()
+            {
+                respuesta = from pel in _context.Peliculas
+                                select new
+                                {
+                                    Imagen = pel.Imagen,
+                                    Titulo = pel.Titulo,
+                                    Fechadecreación = pel.FechaCreacion
+                                };
+                return respuesta.AsQueryable();
+
+            }
+
+            if (name != null) { return filtroTitulo(name); }
+            if (genre != null) { return filtroGenero(genre); }
+            if (order != null) { return ordenar(order); }
+
+            return mostrarTodas();
         }
 
         // GET: api/Peliculas/5

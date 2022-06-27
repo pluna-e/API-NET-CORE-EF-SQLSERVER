@@ -57,7 +57,6 @@ namespace API_Disney.Controllers
         }
 
         // PUT: api/Generos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGenero(int id, Genero genero)
         {
@@ -88,7 +87,6 @@ namespace API_Disney.Controllers
         }
 
         // POST: api/Generos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Genero>> PostGenero(Genero genero)
         {
